@@ -2,6 +2,9 @@ from array import array
 from ast import mod
 from calendar import EPOCH
 from pickletools import optimize
+
+from statistics import mode
+from tabnanny import verbose
 from pandas_datareader import data
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -113,7 +116,7 @@ na=50
 model = Sequential()
 model.add(LSTM(units=na, input_shape=dim_input))
 model.add(Dense(units=dim_exit))
-model.compile(optimizer='rmsprop',loss='mse')
+model.compile(optimizer='adam',loss='mse')
 model.fit(X_train,Y_train,epochs=200,batch_size=64)
 
 
@@ -129,7 +132,7 @@ predic = model.predict(X_test)
 # Inverse transforming the predictions to get them back to the original scale
 predic = scaler.inverse_transform(predic)
 
-print(predic)
+#print(predic)
 
 dates_for_plotting = BTC_data.index[-len(predic):]
 
@@ -154,4 +157,43 @@ plt.title('Actual vs Predicted Prices')
 plt.xlabel('Date')
 plt.ylabel('Price(GBP)')
 plt.legend()
+plt.show()
+
+
+# Predict Next Day
+
+# Prepare the input for the first prediction (the last 60 days from test_data)
+last_60_days = test_data[-60:]
+current_batch = last_60_days.reshape((1, time_step, 1))
+
+# To store the predictions
+future_predictions = []
+
+# Predict the next 30 days
+for i in range(30):  # 30 days
+    # Predict the next day
+    next_day_prediction = model.predict(current_batch)[0]
+    
+    # Append the prediction to the list
+    future_predictions.append(next_day_prediction)
+    
+    # Update the batch to include the new prediction and drop the oldest day
+    current_batch = np.append(current_batch[:,1:,:],[[next_day_prediction]], axis=1)
+
+# Inverse transform to get the predictions back to the original scale
+future_predictions_scaled = scaler.inverse_transform(future_predictions)
+
+# Prepare dates for plotting the predictions
+last_date = BTC_data.index[-1]
+start_date = last_date + pd.Timedelta(days=1)  # Start from the day after the last known date
+prediction_dates = pd.date_range(start=start_date, periods=30)  # Now correctly creates 30 future dates
+
+# Plotting
+plt.figure(figsize=(15,7))
+plt.plot(prediction_dates, future_predictions_scaled, color='green', linestyle='--', label='Future Predicted Price')
+plt.title('Predicted Future Prices for the Next 30 Days')
+plt.xlabel('Date')
+plt.ylabel('Price(GBP)')
+plt.legend()
+plt.xticks(rotation=45)  # Rotate dates for better readability
 plt.show()
