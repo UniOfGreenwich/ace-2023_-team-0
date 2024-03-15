@@ -3,8 +3,11 @@ from ast import mod
 from calendar import EPOCH
 from pickletools import optimize
 from pyexpat import features
+from telnetlib import SE
 import plotly.express as px
-
+import math
+from sklearn.metrics import mean_squared_error, mean_absolute_error, explained_variance_score, r2_score 
+from sklearn.metrics import mean_poisson_deviance, mean_gamma_deviance, accuracy_score
 from statistics import mode
 from tabnanny import verbose
 from pandas_datareader import data
@@ -18,17 +21,17 @@ import numpy as np
 import tensorflow as tf 
 from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
-from keras.layers import Dense, LSTM
+from keras.layers import Dense, LSTM, GRU
 from keras.layers import Dropout
 
 
 
 
-file_path='data.csv'
+file_path='BTC-USD.csv'
 
 BTC_data= pd.read_csv(file_path,index_col='Date', parse_dates=['Date'], dayfirst=True) # Recongize first column as a date
 BTC_data= BTC_data.sort_index() 
-BTC_data= BTC_data[['2a. high (GBP)','5. volume',]]
+BTC_data= BTC_data[['High','Volume',]]
 BTC_data.columns= ['Price','Volume']
 print(BTC_data.head())
 
@@ -193,31 +196,72 @@ print('X_train shape:', X_train.shape)
 print('Y_train shape:', Y_train.shape)
 
 
-dim_exit=1
-na=50 
-
-model = Sequential()
-model.add(LSTM(units=na, input_shape=(time_step, num_features)))
-model.add(Dropout(0.2))  # Dropout 20% of the nodes of the previous layer during training
-model.add(Dense(1))
-model.add(Dense(units=dim_exit))
-model.compile(optimizer='adam',loss='mse')
-model.fit(X_train,Y_train,epochs=50,batch_size=32)
-
-
 X_test = []
+Y_test=[]
 y_length = len(test_data)
 
 for i in range(time_step,  y_length):
     X_test.append(test_data[i-time_step:i, :])
 X_test = np.array(X_test)
 X_test = np.reshape(X_test, (X_test.shape[0],  time_step, num_features))
+Y_test = test_data[time_step:, 0]
+
+
+dim_exit=1
+na=50 
+batch_size=64
+epochs=100
+
+#LSTM
+model = Sequential()
+model.add(LSTM(units=na, input_shape=(time_step, num_features)))
+model.add(Dropout(0.2))  # Dropout 20% of the nodes of the previous layer during training
+model.add(Dense(1))
+model.add(Dense(units=dim_exit))
+model.compile(optimizer='adam',loss='mse')
+model.fit(X_train,Y_train,epochs=epochs,batch_size=batch_size)
+
+
+
+
+
+#GRU
+model2= Sequential()
+model2.add(GRU(units=na, input_shape=(time_step, num_features)),)
+model2.add(Dropout(0.2))
+model2.add(Dense(1))
+model2.add(Dense(units=dim_exit))
+model2.compile(optimizer='adam',loss='mse')
+model2.fit(X_train,Y_train,epochs=epochs,batch_size=batch_size)
+
 
 # Making predictions
 predic = model.predict(X_test)
+predic2 = model2.predict(X_test)
 
 # Inverse transforming the predictions to get them back to the original scale
 price_predictions_scaled = scaler_price.inverse_transform(predic)
+price_predictions_scaled2 = scaler_price.inverse_transform(predic2)
+
+
+# Evaluation metrices RMSE and MAE
+
+print("Test data RMSE: ", math.sqrt(mean_squared_error(Y_test,predic)))
+print("Test data MSE: ", mean_squared_error(Y_test,predic))
+print("Test data MAE: ", mean_absolute_error(Y_test,predic))
+
+## Variance Regression Score
+print("Test data explained variance regression score:", 
+      explained_variance_score(Y_test, predic))
+
+## R square score for regression
+print("Test data R2 score:", r2_score(Y_test, predic))
+
+## Regression Loss Mean Gamma deviance regression loss (MGD) and Mean Poisson deviance regression loss (MPD)
+print("Test data MGD: ", mean_gamma_deviance(Y_test, predic))
+print("----------------------------------------------------------------------")
+print("Test data MPD: ", mean_poisson_deviance(Y_test, predic))
+
 
 # Assuming BTC_data index contains the dates and you have followed the previous steps to create predictions_df
 dates = BTC_data.index
@@ -229,9 +273,13 @@ prediction_length = len(test_dates)
 
 # Ensure the predictions match the number of test dates
 adjusted_predic = price_predictions_scaled[:prediction_length]
+adjusted_predic2 = price_predictions_scaled2[:prediction_length]
 
 # Now create the DataFrame with the adjusted predictions
 predictions_df = pd.DataFrame(data=adjusted_predic, index=test_dates, columns=["Price Prediction"])
+
+predictions_df2 = pd.DataFrame(data=adjusted_predic2, index=test_dates, columns=["Price Prediction2"])
+
 
 # Extract actual high prices for the corresponding dates from the original DataFrame
 # Ensure this uses the same index range as your predictions
@@ -243,10 +291,11 @@ actual_high_prices_df = pd.DataFrame(data=actual_high_prices.values, index=test_
 # Plotting both actual and predicted prices
 plt.figure(figsize=(14, 7))
 plt.plot(predictions_df.index, predictions_df["Price Prediction"], color="blue", label="Predicted High Price")
+plt.plot(predictions_df2.index, predictions_df2["Price Prediction2"], color="yellow", label="Predicted 2 High Price")
 plt.plot(actual_high_prices_df.index, actual_high_prices_df["Actual High Price"], color="red", label="Actual High Price")
 plt.title("Bitcoin Predicted vs Actual High Prices")
 plt.xlabel("Date")
-plt.ylabel("High Price (GBP)")
+plt.ylabel("High Price (Dollar)")
 plt.legend()
 plt.xticks(rotation=45)
 plt.tight_layout() 
@@ -255,19 +304,20 @@ plt.show()
 
 # Predict for the next 30 days
 # Prepare the input for the first prediction (the last 60 days from test_data)
-last_60_days = test_data[-time_step:]
-current_batch = last_60_days.reshape((1, time_step, num_features))
+last_60_days = test_data[-90:]
+current_batch = last_60_days.reshape((1, 90, num_features))
 
 # To store the predictions
 future_predictions = []
-
+future_predictions2 = []
 # Predict the next 30 days
 for i in range(30):  # 30 days
     # Predict the next day
     next_day_prediction = model.predict(current_batch)[0]
-    
+    next_day_prediction2 = model2.predict(current_batch)[0]
     # Append the prediction to the list
     future_predictions.append(next_day_prediction)
+    future_predictions2.append(next_day_prediction2)
     last_features = current_batch[0, -1, 1:]
     
     # Update the batch to include the new prediction and drop the oldest day
@@ -278,10 +328,15 @@ for i in range(30):  # 30 days
     print(f"current_batch shape: {current_batch.shape}")
     print(f"next_day_input shape: {next_day_input.shape}")
 
+    next_day_input2 = np.hstack([next_day_prediction2, last_features]) # Reshape to match the number of features
+    next_day_input2 = next_day_input2.reshape((1, 1, num_features))
+ 
+    print(f"next_day_input shape: {next_day_input2.shape}")
+
 
 # Inverse transform to get the predictions back to the original scale
 future_predictions_scaled = scaler_price.inverse_transform(np.array(future_predictions).reshape(-1, 1))
-
+future_predictions_scaled2 = scaler_price.inverse_transform(np.array(future_predictions2).reshape(-1, 1))
 # Prepare dates for plotting the predictions
 last_date = BTC_data.index[-1]
 start_date = last_date + pd.Timedelta(days=1)  # Start from the day after the last known date
@@ -290,9 +345,10 @@ prediction_dates = pd.date_range(start=start_date, periods=30)  # Now correctly 
 # Plotting
 plt.figure(figsize=(15,7))
 plt.plot(prediction_dates, future_predictions_scaled, color='green', linestyle='--', label='Future Predicted Price')
+plt.plot(prediction_dates, future_predictions_scaled2, color='orange', linestyle='--', label='Future Predicted Price2')
 plt.title('Predicted Future Prices for the Next 30 Days')
 plt.xlabel('Date')
-plt.ylabel('Price(GBP)')
+plt.ylabel('Price(Dollar)')
 plt.legend()
 plt.xticks(rotation=45)  # Rotate dates for better readability
 plt.show()
