@@ -1,0 +1,49 @@
+ How to add a new network connection with nm-connection-editor**
+---
+
+![add nm-connection](add-nm-connection.png)
+
+Figure 1: Comparing nmtui and nm-connection-editor
+<br>
+
+In the head node, the nm-connection editor saves all the network configuration files in etc/sysconfig/network-scripts/ directory.
+
+                    sudo nmcli connection show
+
+By using the above command, can verify the made network connections.
+
+                    sudo nmcli connection up [Network Connection name]
+By using the above command, can activate the specific network connection.
+
+                    sudo ip address show [Network interface]
+
+After activating network connection, can view the IP configuration of the specific device.
+<br>
+
+### **2.2 How to edit a new network connection with nm-connection-editor**
+---
+
+![add nm-connection](add-nm-connection.png)
+
+Figure 2: Comparing nmtui and nm-connection-editor
+<br>
+
+                    sudo nmcli connection down [Network Connection name]
+		            sudo nmcli connection up [Network Connection name]
+After customisation, the Network Manager/ Net plan won’t change the customise options. Therefore, must manually change the customisation by shutting down and turning on network connection.
+
+                    sudo ip address show [Network Interface]
+Verify the customised  IP address changed/ updated.
+<br>
+
+ ### **2.3 How to delete a new network connection with nm-connection-editor**
+ ---
+
+ ![add nm-connection](add-nm-connection.png)
+
+Figure 3: Comparing nmtui and nm-connection-editor
+<br>
+
+                    sudo nmcli connection show 
+Can verify the connection above was deleted.
+<br>
