@@ -37,7 +37,7 @@ By using the above command, can activate the specific network connection.
 After activating network connection, can view the IP configuration of the specific device.
 <br>
 
-## **2.2 How to edit a new network connection with nm-connection-editor**
+## **2.2 How to edit a network connection with nm-connection-editor**
 ---
 
 ![edit_nm_connections](edit-connection.png)<br>
@@ -53,7 +53,7 @@ After customisation, the Network Manager/ Net plan won’t change the customise 
 Verify the customised  IP address changed/ updated.
 <br>
 
- ### **2.3 How to delete a new network connection with nm-connection-editor**
+ ### **2.3 How to delete a network connection with nm-connection-editor**
  ---
  
 ![delete_nm_connections](delete-connection.png)<br>
@@ -65,7 +65,7 @@ Can verify the connection above was deleted.
 <br>
 
 
-## **3. Implementation of nm-connection-editor**
+## **3. Implementation images of nm-connection-editor**
 
 
 
