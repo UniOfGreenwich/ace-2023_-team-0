@@ -1,13 +1,15 @@
-### **1. Introduction**
- ---
+## **Power on and off button for HPC**
+
+## **1. Introduction**
+
 - Aim : Introducing a power on button to HPC.
 - It will help to turn on and off the HPC.
 - Objectives : Hardware Design, Network Configuration, WOL (Wake On LAN) 
 <br><br>
 
 
- ### **2. Methodology**
- ---
+ ## **2. Methodology**
+
 1. How to connect a power button to motherboard?
     - Finding apporpraiate power button (momentary switch)
     - Finding the header for power button in motherboard (Front panel connector)
@@ -29,15 +31,15 @@
 <br><br>
 
 
- ### **3. Implementation**
- ---
+ ## **3. Implementation**
 
 
 
 
 
- ### **4. Helpful Resources**
- ---
+
+ ## **4. Helpful Resources**
+ 
 1. The button can be find here: https://uk.rs-online.com/web/p/push-button-switches/2099127?cm_mmc=UK-PLA-DS3A-_-google-_-CSS_UK_EN_PMAX_RS+PRO-_--_-2099127&matchtype=&&gad_source=1&gclid=EAIaIQobChMIpP3xg7-mhAMVFAUGAB0t5QD5EAQYByABEgIy1_D_BwE&gclsrc=aw.ds
 
 
@@ -48,10 +50,9 @@
 <br><br>
 
 
-## Authors
 
- ### **5. Images**
- ---
+ ## **5. Images**
+
 ![Push button](PushButton.png)<br>
 <b>Figure 1:Push button to be used in the HPC</b>
 <br><br>
