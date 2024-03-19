@@ -57,8 +57,6 @@
 <b>Figure 1:Push button to be used in the HPC</b>
 <br><br>
 
-
 ![Wake On LAN setup](WakeonLan.png)<br>
 <b>Figure 2:Wake On LAN</b>
-<br>
-
+<br><br>
