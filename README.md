@@ -34,12 +34,22 @@
 
  ## **3. Implementation**
 
+ ### **3.1 Setting up Power button on head node**
+ ---
+
+![Power button setup](WOL-setup.png)<br>
+<b>Figure 1: Implementing Power On and Off button on Head node motherboard</b>
+<br>
+
+As shown in picture, first must find out the power button headers. As in A, have found the front panel connectors have the connection to power button and the power button’s LED. Then, as in B connecting the power button with appropriate headers, the LED of power button turns on. Then shutdown the system and turned on using the power button, the system successfully turns on. Moreover, by pressing the power button after head node on, the head node shows power off option in monitor. Through this successfully, implemented the power on and off in compute nodes. 
+
+
 ### **3.2 Setting up Wake-On-LAN magic packets communication**
 ---
 <br>
 
 ![Wake On LAN setup](WOL-setup.png)<br>
-<b>Figure 1: Implementing Wake-On-LAN between a head node and a compute node</b>
+<b>Figure 2: Implementing Wake-On-LAN between a head node and a compute node</b>
 <br>
 
 Following the letters and numbers on the above picture, below going to discuss the purpose of each line.
