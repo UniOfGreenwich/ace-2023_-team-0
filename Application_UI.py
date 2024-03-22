@@ -205,7 +205,7 @@ def UI(root):
     exit_button.grid(row=2, column=1, columnspan=1)
 
     # Update window dimensions
-    root.geometry('800x600')  # Wider window for better layout
+    root.geometry('800x600')  
 
 def style_button(btn):
     btn.config(bg='#4CAF50', fg='white', padx=10, pady=5, font=('Helvetica', 12, 'bold'))

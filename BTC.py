@@ -146,7 +146,7 @@ class Bitcoin:
             print(f'Cannot reshape X_train of shape {X_train.shape} to (samples, {time_step}, {num_features}).')
             # Handle the incorrect shape, perhaps with an error message or a correction
 
-        # Continue with the model definition and training...
+        # Continue with the LSTM_model definition and training...
         print('train_data shape:', train_data.shape)
         print('X_train shape:', X_train.shape)
         print('Y_train shape:', Y_train.shape)
@@ -169,56 +169,78 @@ class Bitcoin:
         epochs=50
 
         #LSTM
-        model = Sequential()
-        model.add(LSTM(units=na, input_shape=(time_step, num_features)))
-        model.add(Dropout(0.2))  # Dropout 20% of the nodes of the previous layer during training
-        model.add(Dense(1))
-        model.add(Dense(units=dim_exit))
-        model.compile(optimizer='adam',loss='mse')
+        LSTM_model = Sequential()
+        LSTM_model.add(LSTM(units=na, input_shape=(time_step, num_features)))
+        LSTM_model.add(Dropout(0.2))  # Dropout 20% of the nodes of the previous layer during training
+        LSTM_model.add(Dense(1))
+        LSTM_model.add(Dense(units=dim_exit))
+        LSTM_model.compile(optimizer='adam',loss='mse')
 
-        history=model.fit(X_train,Y_train,epochs=epochs,batch_size=batch_size,validation_data=(X_validation, Y_validation),verbose=1)
+        history_LSTM=LSTM_model.fit(X_train,Y_train,epochs=epochs,batch_size=batch_size,validation_data=(X_validation, Y_validation),verbose=1)
 
 
 
 
 
         #GRU
-        model2= Sequential()
-        model2.add(GRU(units=na, input_shape=(time_step, num_features)),)
-        model2.add(Dropout(0.2))
-        model2.add(Dense(1))
-        model2.add(Dense(units=dim_exit))
-        model2.compile(optimizer='adam',loss='mse')
-        history2=model2.fit(X_train,Y_train,epochs=epochs,batch_size=batch_size,validation_data=(X_validation, Y_validation),verbose=1)
+        GRU_model= Sequential()
+        GRU_model.add(GRU(units=na, input_shape=(time_step, num_features)),)
+        GRU_model.add(Dropout(0.2))
+        GRU_model.add(Dense(1))
+        GRU_model.add(Dense(units=dim_exit))
+        GRU_model.compile(optimizer='adam',loss='mse')
+        history_GRU=GRU_model.fit(X_train,Y_train,epochs=epochs,batch_size=batch_size,validation_data=(X_validation, Y_validation),verbose=1)
 
 
 
         # Making predictions
-        predic = model.predict(X_test)
-        predic2 = model2.predict(X_test)
+        LSTM_predic = LSTM_model.predict(X_test)
+        GRU_predic = GRU_model.predict(X_test)
 
         # Inverse transforming the predictions to get them back to the original scale
-        price_predictions_scaled = scaler_price.inverse_transform(predic)
-        price_predictions_scaled2 = scaler_price.inverse_transform(predic2)
+        LSTM_price_predictions_scaled = scaler_price.inverse_transform(LSTM_predic)
+        GRU_price_predictions_scaled = scaler_price.inverse_transform(GRU_predic)
 
 
+        #Evaluation metrics for LSTM
         # Evaluation metrices RMSE and MAE
 
-        print("Test data RMSE: ", math.sqrt(mean_squared_error(Y_test,predic)))
-        print("Test data MSE: ", mean_squared_error(Y_test,predic))
-        print("Test data MAE: ", mean_absolute_error(Y_test,predic))
+        print("LSTM Test data RMSE: ", math.sqrt(mean_squared_error(Y_test,LSTM_predic)))
+        print("LSTM Test data MSE: ", mean_squared_error(Y_test,LSTM_predic))
+        print("LSTM Test data MAE: ", mean_absolute_error(Y_test,LSTM_predic))
 
         ## Variance Regression Score
-        print("Test data explained variance regression score:", 
-              explained_variance_score(Y_test, predic))
+        print("LSTM Test data explained variance regression score:", 
+              explained_variance_score(Y_test, LSTM_predic))
 
         ## R square score for regression
-        print("Test data R2 score:", r2_score(Y_test, predic))
+        print("LSTM Test data R2 score:", r2_score(Y_test, LSTM_predic))
 
         ## Regression Loss Mean Gamma deviance regression loss (MGD) and Mean Poisson deviance regression loss (MPD)
-        print("Test data MGD: ", mean_gamma_deviance(Y_test, predic))
+        print("LSTM Test data MGD: ", mean_gamma_deviance(Y_test, LSTM_predic))
+        print("LSTM Test data MPD: ", mean_poisson_deviance(Y_test, LSTM_predic))
+
         print("----------------------------------------------------------------------")
-        print("Test data MPD: ", mean_poisson_deviance(Y_test, predic))
+        print("----------------------------------------------------------------------")
+
+        # Evaluation metrics for GRU
+        # Evaluation metrices RMSE and MAE
+
+        print("GRU Test data RMSE: ", math.sqrt(mean_squared_error(Y_test,GRU_predic)))
+        print("GRU Test data MSE: ", mean_squared_error(Y_test,GRU_predic))
+        print("GRU Test data MAE: ", mean_absolute_error(Y_test,GRU_predic))
+
+        ## Variance Regression Score
+        print("GRU Test data explained variance regression score:", 
+              explained_variance_score(Y_test, GRU_predic))
+
+        ## R square score for regression
+        print("GRU Test data R2 score:", r2_score(Y_test, GRU_predic))
+
+        ## Regression Loss Mean Gamma deviance regression loss (MGD) and Mean Poisson deviance regression loss (MPD)
+        print("GRU Test data MGD: ", mean_gamma_deviance(Y_test, GRU_predic))
+        print("GRU Test data MPD: ", mean_poisson_deviance(Y_test, GRU_predic))
+
 
 
        
@@ -226,14 +248,14 @@ class Bitcoin:
         # Extract dates for test data
        
         test_dates = self.BTC_data.index[-len(test_data):] 
-        test_dates = test_dates[-len(predic):] 
+        test_dates = test_dates[-len(LSTM_predic):] 
         
-        assert len(predic) == len(test_dates), f"Length of predictions: {len(predic)}, Length of test dates: {len(test_dates)}"
+        assert len(LSTM_predic) == len(test_dates), f"Length of predictions: {len(LSTM_predic)}, Length of test dates: {len(test_dates)}"
         
 
         # Ensure the predictions match the number of test dates
-        adjusted_predic = price_predictions_scaled[:prediction_length]
-        adjusted_predic2 = price_predictions_scaled2[:prediction_length]
+        LSTM_adjusted_predic = LSTM_price_predictions_scaled[:prediction_length]
+        GRU_adjusted_predic = GRU_price_predictions_scaled[:prediction_length]
 
         #print(len(adjusted_predic), len(test_dates)) 
 
@@ -242,14 +264,14 @@ class Bitcoin:
 
         # Extract actual high prices 
         actual_high_prices = self.BTC_data['Price'][-len(test_data):]
-        actual_high_prices_trimmed = actual_high_prices[-len(predic):]
+        actual_high_prices_trimmed = actual_high_prices[-len(LSTM_predic):]
        
 
         # Plotting both actual and predicted prices
         plt.figure(figsize=(14, 7))
         plt.plot(test_dates, actual_high_prices_trimmed, color="red", label="Actual High Price")
-        plt.plot(test_dates, adjusted_predic, color="blue", label="Predicted High Price")
-        plt.plot(test_dates, adjusted_predic2, color="yellow", label="Predicted 2 High Price")
+        plt.plot(test_dates, LSTM_adjusted_predic, color="blue", label="Predicted High Price by LSTM")
+        plt.plot(test_dates, GRU_adjusted_predic, color="yellow", label="Predicted High Price by GRU")
         plt.title("Bitcoin Predicted vs Actual High Prices")
         plt.xlabel("Date")
         plt.ylabel("High Price (Dollar)")
@@ -262,28 +284,28 @@ class Bitcoin:
         time_based = 90
         # Prepare the input for the first prediction by taking the last 90 days from test_data
         last_90_days = test_data[-time_based:]
-        # Reshape the last 90 days data to fit the model's expected input shape
+        # Reshape the last 90 days data to fit the LSTM_model's expected input shape
         current_batch = last_90_days.reshape((1, time_based, num_features))
 
-        # Initialize two lists to store future predictions for each model
-        future_predictions = []
-        future_predictions2 = []
+        # Initialize two lists to store future predictions for each LSTM_model
+        LSTM_future_predictions = []
+        GRU_future_predictions = []
 
         # Predict the next 30 days
         for i in range(30):  # Loop for 30 days
-            # Predict the next day using the first model
-            next_day_prediction = model.predict(current_batch)[0]
-            # Predict the next day using the second model
-            next_day_prediction2 = model2.predict(current_batch)[0]
+            # Predict the next day using the first LSTM_model
+            LSTM_next_day_prediction = LSTM_model.predict(current_batch)[0]
+            # Predict the next day using the second LSTM_model
+            GRU_next_day_prediction = GRU_model.predict(current_batch)[0]
             # Add the predictions to their respective lists
-            future_predictions.append(next_day_prediction)
-            future_predictions2.append(next_day_prediction2)
+            LSTM_future_predictions.append(LSTM_next_day_prediction)
+            GRU_future_predictions.append(GRU_next_day_prediction)
     
             # Get the features from the last day in the batch (excluding the target feature)
             last_features = current_batch[0, -1, 1:]
     
             # Combine the next day prediction with the last features
-            next_day_input = np.hstack([next_day_prediction, last_features])
+            next_day_input = np.hstack([LSTM_next_day_prediction, last_features])
             # Reshape the combination to match the expected number of features
             next_day_input = next_day_input.reshape((1, 1, num_features))
             # Update the batch to include the new prediction and drop the oldest day
@@ -293,14 +315,14 @@ class Bitcoin:
             print(f"current_batch shape: {current_batch.shape}")
             print(f"next_day_input shape: {next_day_input.shape}")
     
-            # Repeat the process for the second model's predictions
-            next_day_input2 = np.hstack([next_day_prediction2, last_features])
-            next_day_input2 = next_day_input2.reshape((1, 1, num_features))
-            print(f"next_day_input shape: {next_day_input2.shape}")
+            # Repeat the process for the second LSTM_model's predictions
+            GRU_next_day_input = np.hstack([GRU_next_day_prediction, last_features])
+            GRU_next_day_input = GRU_next_day_input.reshape((1, 1, num_features))
+            print(f"next_day_input shape: {GRU_next_day_input.shape}")
 
         # Reverse the scaling transformation to convert predictions back to their original scale
-        future_predictions_scaled = scaler_price.inverse_transform(np.array(future_predictions).reshape(-1, 1))
-        future_predictions_scaled2 = scaler_price.inverse_transform(np.array(future_predictions2).reshape(-1, 1))
+        LSTM_future_predictions_scaled = scaler_price.inverse_transform(np.array(LSTM_future_predictions).reshape(-1, 1))
+        GRU_future_predictions_scaled = scaler_price.inverse_transform(np.array(GRU_future_predictions).reshape(-1, 1))
 
         # Get the last date from the dataset
         last_date = self.BTC_data.index[-1]
@@ -312,10 +334,10 @@ class Bitcoin:
         # Plotting the predictions
         # Set the figure size for better visibility
         plt.figure(figsize=(15,7))
-        # Plot the scaled future predictions from the first model
-        plt.plot(prediction_dates, future_predictions_scaled, color='green', linestyle='--', label='Future Predicted Price')
-        # Plot the scaled future predictions from the second model
-        plt.plot(prediction_dates, future_predictions_scaled2, color='orange', linestyle='--', label='Future Predicted Price2')
+        # Plot the scaled future predictions from the first LSTM_model
+        plt.plot(prediction_dates, LSTM_future_predictions_scaled, color='green', linestyle='--', label='Future Predicted Price by LSTM')
+        # Plot the scaled future predictions from the second LSTM_model
+        plt.plot(prediction_dates, GRU_future_predictions_scaled, color='orange', linestyle='--', label='Future Predicted Price by GRU')
         # Set the title of the plot
         plt.title('Predicted Future Prices for the Next 30 Days')
         # Set the x-axis label
