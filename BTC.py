@@ -1,19 +1,13 @@
 # -*- coding: cp1252 -*-
 from array import array
 from ast import mod
-from calendar import EPOCH
 from pickletools import optimize
 import math
 from sklearn.metrics import mean_squared_error, mean_absolute_error, explained_variance_score, r2_score 
 from sklearn.metrics import mean_poisson_deviance, mean_gamma_deviance, accuracy_score
 from statistics import mode
-from tabnanny import verbose
-from pandas_datareader import data
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 import pandas as pd
-import datetime as dt
-import os
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from keras.models import Sequential
@@ -370,11 +364,11 @@ class Bitcoin:
                 X, Y = [], []
                 for i in range(len(data) - time_step):
                  X.append(data[i:(i + time_step), :])
-                 Y.append(data[i + time_step, 0])  # Asumiendo que el precio está en la primera columna
+                 Y.append(data[i + time_step, 0]) 
             
                 return np.array(X), np.array(Y)
      def get_yesterday_date(self):
-        yesterday = datetime.now() - timedelta(days=0)
+        yesterday = datetime.now() - timedelta(days=1)
         return yesterday.strftime('%Y-%m-%d')
 
            

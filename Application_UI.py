@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog, font
 import hashlib
-from BTC import Bitcoin  # Assuming BTC.py contains a class Bitcoin
-from ETH import ETH      # Assuming ETH.py contains a class ETH
+from BTC import Bitcoin  
+from ETH import ETH     
+from BNB import BNB
 
 
 
@@ -184,7 +185,7 @@ def UI(root):
     content_frame = tk.Frame(root)
     content_frame.place(relx=0.5, rely=0.5, anchor='center')
 
-    tk.Label(content_frame, text="Choose a cryptocurrency to predict its future price.", padx=10, pady=20).grid(row=0, column=0, columnspan=2)
+    tk.Label(content_frame, text="Choose a cryptocurrency to predict its future price.", padx=10, pady=20).grid(row=0, column=1, columnspan=1)
 
     # Styling
     button_font = font.Font(size=14, weight='bold')
@@ -196,9 +197,12 @@ def UI(root):
     btn_eth = tk.Button(content_frame, text="Predict ETH Price", command=lambda: ETH().predict_price(), **button_style)
     btn_eth.grid(row=1, column=1, padx=20, pady=20)
 
+    btn_BNB = tk.Button(content_frame, text="Predict BNB Price", command=lambda: BNB().predict_price(), **button_style)
+    btn_BNB.grid(row=1, column=2, padx=20, pady=20)
+
     # Exit Button
     exit_button = tk.Button(content_frame, text="Exit", command=root.quit, **button_style)
-    exit_button.grid(row=2, column=0, columnspan=2)
+    exit_button.grid(row=2, column=1, columnspan=1)
 
     # Update window dimensions
     root.geometry('800x600')  # Wider window for better layout
