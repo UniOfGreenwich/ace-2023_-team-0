@@ -8,19 +8,20 @@ import threading
 import time
 
 
-
+# Constant filepath for user details storage
 USER_DETAILS_FILEPATH = "users.txt"
-PUNCTUATIONS = "@#$%&"
 
-
+# Function to hash a password using SHA-256
 def hash_password(pwd):
     hashed_pwd = hashlib.sha256(pwd.encode('utf-8')).hexdigest()
     return hashed_pwd
 
+# Function to save the user details to a text file
 def save_user(username, hashed_pwd):
     with open(USER_DETAILS_FILEPATH, "a") as f:
         f.write(f"{username} {hashed_pwd}\n")
 
+# Function to check if a username already exists in the text file
 def user_exists(username):
     try:
         with open(USER_DETAILS_FILEPATH, "r") as f:
@@ -29,10 +30,13 @@ def user_exists(username):
                 if parts[0] == username:
                     return True
     except FileNotFoundError:
+        # If the file doesn't exist, create it
         with open(USER_DETAILS_FILEPATH, "w") as f:
             pass
     return False
 
+
+# Function to authenticate a user based on username and password
 def authenticate_user(username, password):
     with open(USER_DETAILS_FILEPATH, "r") as f:
         for line in f:
@@ -41,30 +45,36 @@ def authenticate_user(username, password):
                 return True
     return False
 
+# Function for handling the registration of a new user
 def register(username_entry, password_entry, retype_password_entry):
+    # Get the entered details from the UI
     username = username_entry.get()
     password = password_entry.get()
     retype_password = retype_password_entry.get()
 
-    # Check for empty fields
+
+    # Check for empty fields and display an error message if found
     if not username or not password or not retype_password:
         messagebox.showerror("Error", "Username and password fields cannot be empty.")
         return
-
+     # Check if the two entered passwords match
     if password != retype_password:
         messagebox.showerror("Error", "Passwords do not match.")
         return
 
+     # Check if the user already exists
     if user_exists(username):
         messagebox.showerror("Error", "User already exists.")
         return
 
+    # Hash the password and save the new user
     hashed_password = hash_password(password)
     save_user(username, hashed_password)
     messagebox.showinfo("Success", "User created successfully.\nRemember your password.")
 
-
+# Function for handling user login
 def login(username_entry, password_entry, root):
+    # Get the entered details from the UI
     username = username_entry.get()
     password = password_entry.get()
 
@@ -72,13 +82,14 @@ def login(username_entry, password_entry, root):
     if not username or not password:
         messagebox.showerror("Error", "Username and password fields cannot be empty.")
         return
-
+    # Authenticate the user
     if user_exists(username) and authenticate_user(username, password):
         messagebox.showinfo("Success", "Login successful.")
-        UI(root)
+        UI(root)# Open the main prediction UI
     else:
         messagebox.showerror("Error", "Incorrect username or password.")
 
+# Function to create the login UI
 def create_login_ui(root):
     # Clear the window
     for widget in root.winfo_children():
@@ -125,7 +136,7 @@ def create_login_ui(root):
     exit_button.grid(row=4, column=1, pady=10)
 
 
-
+ # Function to create the registration UI
 def create_register_ui(root):
     # Clear the window
     for widget in root.winfo_children():
@@ -176,6 +187,7 @@ def create_register_ui(root):
     exit_button = style_button(tk.Button(center_frame, text="Exit", command=root.quit))
     exit_button.grid(row=5, column=1, pady=10)
 
+ # Main UI for the application, displayed after successful login
 def UI(root):
     # Clear the window for the prediction UI
     for widget in root.winfo_children():
@@ -196,21 +208,22 @@ def UI(root):
     content_frame = tk.Frame(root)
     content_frame.place(relx=0.5, rely=0.5, anchor='center')
 
+    #Label
     tk.Label(content_frame, text="Choose a cryptocurrency to predict its future price.", padx=10, pady=20).grid(row=0, column=1, columnspan=1)
 
     # Styling
     button_font = font.Font(size=14, weight='bold')
     button_style = {'font': button_font, 'bg': '#4CAF50', 'fg': 'white', 'padx': 20, 'pady': 10}
 
+    # Predict Bitcoin button
     btn_bitcoin = tk.Button(content_frame, text="Predict Bitcoin Price", command=lambda: start_bitcoin_process(root, time_taken_label, btn_bitcoin), **button_style)
     btn_bitcoin.grid(row=1, column=0, padx=20, pady=20)
 
-
-
-
+    # Predict ETH button
     btn_eth = tk.Button(content_frame, text="Predict ETH Price", command=lambda: start_ETH_process(root, time_taken_label, btn_eth), **button_style)
     btn_eth.grid(row=1, column=1, padx=20, pady=20)
 
+    # Predict BNB button
     btn_BNB = tk.Button(content_frame, text="Predict BNB Price", command=lambda: start_BNB_process(root, time_taken_label,btn_BNB), **button_style)
     btn_BNB.grid(row=1, column=2, padx=20, pady=20)
 
@@ -222,9 +235,12 @@ def UI(root):
     # Update window dimensions
     root.geometry('800x600')  
 
+# Function to create a styled button with consistent appearance
 def style_button(btn):
     btn.config(bg='#4CAF50', fg='white', padx=10, pady=5, font=('Helvetica', 12, 'bold'))
     return btn
+
+# Function to create and open a new window that displays the progress of a task
 def open_progress_window(root):
     progress_win = tk.Toplevel(root)
     progress_win.title("Processing")
@@ -252,6 +268,7 @@ def open_progress_window(root):
 
     return progress_win, progress_bar, progress_label
 
+# Function to start the Bitcoin prediction process
 def start_bitcoin_process(root, time_taken_label, btn_bitcoin):
     def run():
         window_closed = False
@@ -291,7 +308,7 @@ def start_bitcoin_process(root, time_taken_label, btn_bitcoin):
 
 
 
-
+# Function to start the ETH prediction process
 def start_ETH_process(root,time_taken_label,btn_eth):
     def run():
         window_closed = False
@@ -329,7 +346,7 @@ def start_ETH_process(root,time_taken_label,btn_eth):
     btn_eth.config(state='disabled')
     threading.Thread(target=run, daemon=True).start()
 
-
+# Function to start the BNB prediction process
 def start_BNB_process(root,time_taken_label,btn_bnb):
     def run():
         window_closed = False
@@ -367,13 +384,14 @@ def start_BNB_process(root,time_taken_label,btn_bnb):
     btn_bnb.config(state='disabled')
     threading.Thread(target=run, daemon=True).start()
 
-
+# Function to update the time label with the time taken for the prediction
 def update_time_label(root,label, time_taken):
     # This function updates the time label on the main UI thread
     time_taken_minutes = time_taken / 60
     message = f"Time taken for last prediction: {time_taken_minutes:.2f} minutes"
     root.after(0, lambda: label.config(text=message))
 
+# Main
 def main():
 
     root = tk.Tk()
