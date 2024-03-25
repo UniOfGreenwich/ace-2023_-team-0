@@ -16,12 +16,35 @@ from keras.layers import Dense, LSTM, GRU
 from keras.layers import Dropout
 import yfinance as yf
 from datetime import datetime, timedelta
+from keras.callbacks import Callback
+
+
+
+class UpdateProgressBar(Callback):
+    def __init__(self,root, progress_bar, progress_label, total_epochs):
+        super().__init__()
+        self.root = root
+        self.progress_bar = progress_bar
+        self.progress_label = progress_label
+        self.total_epochs = total_epochs
+
+    def on_epoch_end(self, epoch, logs=None):
+        # Update progress
+        percentage = (epoch + 1) / self.total_epochs * 100
+        def update_ui():
+            self.progress_bar['value'] = percentage
+            self.progress_label.config(text=f"Training Progress: {percentage:.2f}%")
+        self.root.after(0, update_ui)
+
 
 
 class BNB:
     
 
-     def __init__(self):
+     def __init__(self,root,progress_bar=None, progress_label=None, callback=None):
+        self.root = root
+        self.progress_bar = progress_bar
+        self.progress_label = progress_label
         ticker_symbol = "BNB-USD"
         start_date = "2017-07-09"
         end_date = self.get_yesterday_date()
@@ -176,11 +199,18 @@ class BNB:
         LSTM_model.add(Dense(1))
         LSTM_model.add(Dense(units=dim_exit))
         LSTM_model.compile(optimizer='adam',loss='mse')
+         # Create the UpdateProgressBar callback instance
+        if self.progress_bar and self.progress_label:
+            progress_callback = UpdateProgressBar(root, self.progress_bar, self.progress_label, epochs)
+            callbacks = [progress_callback]
+        else:
+            callbacks = []
 
-        history_LSTM=LSTM_model.fit(X_train,Y_train,epochs=epochs,batch_size=batch_size,validation_data=(X_validation, Y_validation),verbose=1)
+        history_LSTM=LSTM_model.fit(X_train,Y_train,epochs=epochs,batch_size=batch_size,validation_data=(X_validation, Y_validation),callbacks=callbacks,verbose=1)
 
 
-
+        progress_bar['value'] = 0
+        progress_label.config(text="Initializing...")
 
 
         #GRU
@@ -190,7 +220,15 @@ class BNB:
         GRU_model.add(Dense(1))
         GRU_model.add(Dense(units=dim_exit))
         GRU_model.compile(optimizer='adam',loss='mse')
-        history_GRU=GRU_model.fit(X_train,Y_train,epochs=epochs,batch_size=batch_size,validation_data=(X_validation, Y_validation),verbose=1)
+
+         # Create the UpdateProgressBar callback instance
+        if self.progress_bar and self.progress_label:
+            progress_callback = UpdateProgressBar(root,self.progress_bar, self.progress_label, epochs)
+            callbacks = [progress_callback]
+        else:
+            callbacks = []
+
+        history_GRU=GRU_model.fit(X_train,Y_train,epochs=epochs,batch_size=batch_size,validation_data=(X_validation, Y_validation),callbacks=callbacks,verbose=1)
 
 
 

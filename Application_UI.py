@@ -1,9 +1,11 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog, font
+from tkinter import messagebox, simpledialog, font, ttk
 import hashlib
 from BTC import Bitcoin  
 from ETH import ETH     
 from BNB import BNB
+import threading
+import time
 
 
 
@@ -181,6 +183,15 @@ def UI(root):
 
     root.title("Cryptocurrency Price Prediction Tool")
 
+    # Progress Frame
+    progress_frame = tk.Frame(root)
+    progress_frame.pack(pady=10)
+
+    # Initialize the time taken label and hide it using `pack_forget`
+    time_taken_label = tk.Label(root, text="", font=('Helvetica', 10), bg='#f7f7f7')
+    time_taken_label.pack(side='bottom', fill=tk.X, padx=10, pady=5)
+    time_taken_label.pack_forget()  # This hides the label initially
+
     # Center the content in the window
     content_frame = tk.Frame(root)
     content_frame.place(relx=0.5, rely=0.5, anchor='center')
@@ -191,18 +202,22 @@ def UI(root):
     button_font = font.Font(size=14, weight='bold')
     button_style = {'font': button_font, 'bg': '#4CAF50', 'fg': 'white', 'padx': 20, 'pady': 10}
 
-    btn_bitcoin = tk.Button(content_frame, text="Predict Bitcoin Price", command=lambda: Bitcoin().predict_price(), **button_style)
+    btn_bitcoin = tk.Button(content_frame, text="Predict Bitcoin Price", command=lambda: start_bitcoin_process(root, time_taken_label, btn_bitcoin), **button_style)
     btn_bitcoin.grid(row=1, column=0, padx=20, pady=20)
 
-    btn_eth = tk.Button(content_frame, text="Predict ETH Price", command=lambda: ETH().predict_price(), **button_style)
+
+
+
+    btn_eth = tk.Button(content_frame, text="Predict ETH Price", command=lambda: start_ETH_process(root, time_taken_label, btn_eth), **button_style)
     btn_eth.grid(row=1, column=1, padx=20, pady=20)
 
-    btn_BNB = tk.Button(content_frame, text="Predict BNB Price", command=lambda: BNB().predict_price(), **button_style)
+    btn_BNB = tk.Button(content_frame, text="Predict BNB Price", command=lambda: start_BNB_process(root, time_taken_label,btn_BNB), **button_style)
     btn_BNB.grid(row=1, column=2, padx=20, pady=20)
 
     # Exit Button
     exit_button = tk.Button(content_frame, text="Exit", command=root.quit, **button_style)
     exit_button.grid(row=2, column=1, columnspan=1)
+
 
     # Update window dimensions
     root.geometry('800x600')  
@@ -210,6 +225,154 @@ def UI(root):
 def style_button(btn):
     btn.config(bg='#4CAF50', fg='white', padx=10, pady=5, font=('Helvetica', 12, 'bold'))
     return btn
+def open_progress_window(root):
+    progress_win = tk.Toplevel(root)
+    progress_win.title("Processing")
+    window_width = 400
+    window_height = 100
+    progress_win.geometry(f"{window_width}x{window_height}")
+
+    # Get the screen dimension
+    screen_width = progress_win.winfo_screenwidth()
+    screen_height = progress_win.winfo_screenheight()
+
+    # Find the center position
+    center_x = int(screen_width/2 - window_width / 2)
+    center_y = int(screen_height/2 - window_height / 2)
+
+    # Set the position of the window to the center of the screen
+    progress_win.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+
+    progress_label = tk.Label(progress_win, text="Initializing LSTM...", anchor="w")
+    progress_label.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+    progress_bar = ttk.Progressbar(progress_win, orient=tk.HORIZONTAL, length=300, mode='determinate')
+    progress_bar.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+    progress_win.overrideredirect(True)
+
+    return progress_win, progress_bar, progress_label
+
+def start_bitcoin_process(root, time_taken_label, btn_bitcoin):
+    def run():
+        window_closed = False
+
+        def on_closing():
+            nonlocal window_closed
+            window_closed = True
+            progress_win.destroy()
+
+        progress_win, progress_bar, progress_label = open_progress_window(root)
+        progress_win.protocol("WM_DELETE_WINDOW", on_closing)
+
+        # Hide the time label at the start of a new process
+        time_taken_label.pack_forget()
+        start_time = time.time()
+
+        
+        Bitcoin(root, progress_bar, progress_label)
+        
+
+        # If the progress window was closed, don't update the time label
+        
+        time_taken = time.time() - start_time
+        root.after(0, lambda: time_taken_label.config(text=f"Time taken for last prediction: {time_taken:.2f} seconds"))
+        root.after(0, lambda: time_taken_label.pack(side='bottom', fill=tk.X, padx=10, pady=5))
+
+        # Re-enable the button whether the window was closed or not
+        root.after(0, lambda: btn_bitcoin.config(state='normal'))
+
+        # If the window is not closed, destroy it
+        if not window_closed:
+            progress_win.destroy()
+
+    # Disable the button before starting the thread
+    btn_bitcoin.config(state='disabled')
+    threading.Thread(target=run, daemon=True).start()
+
+
+
+
+def start_ETH_process(root,time_taken_label,btn_eth):
+    def run():
+        window_closed = False
+
+        def on_closing():
+            nonlocal window_closed
+            window_closed = True
+            progress_win.destroy()
+
+        progress_win, progress_bar, progress_label = open_progress_window(root)
+        progress_win.protocol("WM_DELETE_WINDOW", on_closing)
+
+        # Hide the time label at the start of a new process
+        time_taken_label.pack_forget()
+        start_time = time.time()
+
+        
+        ETH(root, progress_bar, progress_label)
+        
+
+        # If the progress window was closed, don't update the time label
+        
+        time_taken = time.time() - start_time
+        root.after(0, lambda: time_taken_label.config(text=f"Time taken for last prediction: {time_taken:.2f} seconds"))
+        root.after(0, lambda: time_taken_label.pack(side='bottom', fill=tk.X, padx=10, pady=5))
+
+        # Re-enable the button whether the window was closed or not
+        root.after(0, lambda: btn_eth.config(state='normal'))
+
+        # If the window is not closed, destroy it
+        if not window_closed:
+            progress_win.destroy()
+
+    # Disable the button before starting the thread
+    btn_eth.config(state='disabled')
+    threading.Thread(target=run, daemon=True).start()
+
+
+def start_BNB_process(root,time_taken_label,btn_bnb):
+    def run():
+        window_closed = False
+
+        def on_closing():
+            nonlocal window_closed
+            window_closed = True
+            progress_win.destroy()
+
+        progress_win, progress_bar, progress_label = open_progress_window(root)
+        progress_win.protocol("WM_DELETE_WINDOW", on_closing)
+
+        # Hide the time label at the start of a new process
+        time_taken_label.pack_forget()
+        start_time = time.time()
+
+        
+        ETH(root, progress_bar, progress_label)
+        
+
+        # If the progress window was closed, don't update the time label
+        
+        time_taken = time.time() - start_time
+        root.after(0, lambda: time_taken_label.config(text=f"Time taken for last prediction: {time_taken:.2f} seconds"))
+        root.after(0, lambda: time_taken_label.pack(side='bottom', fill=tk.X, padx=10, pady=5))
+
+        # Re-enable the button whether the window was closed or not
+        root.after(0, lambda: btn_bnb.config(state='normal'))
+
+        # If the window is not closed, destroy it
+        if not window_closed:
+            progress_win.destroy()
+
+    # Disable the button before starting the thread
+    btn_bnb.config(state='disabled')
+    threading.Thread(target=run, daemon=True).start()
+
+
+def update_time_label(root,label, time_taken):
+    # This function updates the time label on the main UI thread
+    time_taken_minutes = time_taken / 60
+    message = f"Time taken for last prediction: {time_taken_minutes:.2f} minutes"
+    root.after(0, lambda: label.config(text=message))
 
 def main():
 
