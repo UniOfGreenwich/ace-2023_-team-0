@@ -58,7 +58,7 @@ class Bitcoin():
 
         #plotting prices
         #plt.figure(figsize=(10, 6))  # Set the figure size for better readability
-        #plt.plot(BTC_data.index, BTC_data['Price'], label='High Price', color='blue')  # Plot the 'Price' column
+        #plt.plot(self.BTC_data.index, self.BTC_data['Price'], label='High Price', color='blue')  # Plot the 'Price' column
         #plt.title('BTC High Price Over Time')  # Set the title of the plot
         #plt.xlabel('Date')  # Set the x-axis label
         #plt.ylabel('High Price in GBP')  # Set the y-axis label
