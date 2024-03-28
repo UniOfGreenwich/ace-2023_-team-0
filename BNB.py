@@ -1,13 +1,8 @@
 # -*- coding: cp1252 -*-
-from array import array
-from ast import mod
-from pickletools import optimize
 import math
 from sklearn.metrics import mean_squared_error, mean_absolute_error, explained_variance_score, r2_score 
-from sklearn.metrics import mean_poisson_deviance, mean_gamma_deviance, accuracy_score
-from statistics import mode
+from sklearn.metrics import mean_poisson_deviance, mean_gamma_deviance
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler

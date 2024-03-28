@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog, font, ttk
+from tkinter import messagebox, font, ttk
 import hashlib
 from BTC import Bitcoin  
 from ETH import ETH     
@@ -289,12 +289,10 @@ def start_bitcoin_process(root, time_taken_label, btn_bitcoin):
         Bitcoin(root, progress_bar, progress_label)
         
 
-        # If the progress window was closed, don't update the time label
+   
         
         time_taken = time.time() - start_time
-        root.after(0, lambda: time_taken_label.config(text=f"Time taken for last prediction: {time_taken:.2f} seconds"))
-        root.after(0, lambda: time_taken_label.pack(side='bottom', fill=tk.X, padx=10, pady=5))
-
+        update_time_label(root, time_taken_label, time_taken)
         # Re-enable the button whether the window was closed or not
         root.after(0, lambda: btn_bitcoin.config(state='normal'))
 
@@ -305,8 +303,6 @@ def start_bitcoin_process(root, time_taken_label, btn_bitcoin):
     # Disable the button before starting the thread
     btn_bitcoin.config(state='disabled')
     threading.Thread(target=run, daemon=True).start()
-
-
 
 # Function to start the ETH prediction process
 def start_ETH_process(root,time_taken_label,btn_eth):
@@ -332,8 +328,7 @@ def start_ETH_process(root,time_taken_label,btn_eth):
         # If the progress window was closed, don't update the time label
         
         time_taken = time.time() - start_time
-        root.after(0, lambda: time_taken_label.config(text=f"Time taken for last prediction: {time_taken:.2f} seconds"))
-        root.after(0, lambda: time_taken_label.pack(side='bottom', fill=tk.X, padx=10, pady=5))
+        update_time_label(root, time_taken_label, time_taken)
 
         # Re-enable the button whether the window was closed or not
         root.after(0, lambda: btn_eth.config(state='normal'))
@@ -364,14 +359,13 @@ def start_BNB_process(root,time_taken_label,btn_bnb):
         start_time = time.time()
 
         
-        ETH(root, progress_bar, progress_label)
+        BNB(root, progress_bar, progress_label)
         
 
         # If the progress window was closed, don't update the time label
         
         time_taken = time.time() - start_time
-        root.after(0, lambda: time_taken_label.config(text=f"Time taken for last prediction: {time_taken:.2f} seconds"))
-        root.after(0, lambda: time_taken_label.pack(side='bottom', fill=tk.X, padx=10, pady=5))
+        update_time_label(root, time_taken_label, time_taken)
 
         # Re-enable the button whether the window was closed or not
         root.after(0, lambda: btn_bnb.config(state='normal'))
@@ -387,9 +381,10 @@ def start_BNB_process(root,time_taken_label,btn_bnb):
 # Function to update the time label with the time taken for the prediction
 def update_time_label(root,label, time_taken):
     # This function updates the time label on the main UI thread
-    time_taken_minutes = time_taken / 60
-    message = f"Time taken for last prediction: {time_taken_minutes:.2f} minutes"
+    time_taken_label = time_taken / 60
+    message = f"Time taken for last prediction: {time_taken_label:.2f} minutes"
     root.after(0, lambda: label.config(text=message))
+    root.after(0, lambda: label.pack(side='bottom', fill=tk.X, padx=10, pady=5))
 
 # Main
 def main():
