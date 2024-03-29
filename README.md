@@ -37,7 +37,7 @@
  ### **3.1 Setting up Power button on head node**
  ---
 
-![Power button setup](WOL-setup.png)<br>
+![Power button setup](powerbuttonsetup.png)<br>
 <b>Figure 1: Implementing Power On and Off button on Head node motherboard</b>
 <br>
 
