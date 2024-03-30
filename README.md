@@ -12,7 +12,7 @@ By typing the above command in Linux terminal, user can start the nm connection 
 ![nmtui_nmconnections](nm-connection-nmtui.png)<br>
 <br><br>
 
-## **2. Methodology of nm-connection-editor**
+## **2. Methodology of nm-connection-editor implementation**
  
 ### **2.1 How to add a new network connection with nm-connection-editor**
 ---
@@ -22,6 +22,7 @@ By typing the above command in Linux terminal, user can start the nm connection 
 <b>Figure 1:Flow diagram to add a new network connection in nm-connection-editor</b>
 <br><br>
 
+(Note: The above flow chart, made in consideration of following static IP address configuration and HPC purpose only.)
 
 In the head node, the nm-connection editor saves all the network configuration files in etc/sysconfig/network-scripts/ directory.
 
@@ -65,7 +66,7 @@ Can verify the connection above was deleted.
 <br>
 
 
-## **3. Implementation images of nm-connection-editor**
+## **3. Networking implemenatation for HPC**
 
 ### **3.1 Network bridging**
 ---
@@ -90,11 +91,20 @@ To implement networking for this project, have used the network bridging format.
 
 ### **3.2 Static IP Address**
 ---
+After establishing network connections, it is necessary to assign an IP address to each node to uniquely identify each one in the HPC network. Therefore, we use static IP address configuration. A static IP address means manually assigning an IP address to network devices. In this case, a Class C IPv4 address is used. The given subnet mask is /24 or 255.255.255.0.The assigned IP addresses are shown below in Table 2. Additionally, the table contains the MAC address of each node.
+
+<b>Table 2: IP Address and MAC Address of each node</b>
+![ipandmacaddressinfo](ip&macaddress.png)<br>
+<br>
+
+### **3.3 Network implmentation in HPC using nm-connection editor**
+---
+
+ ## **4. Testing networking implementation**
 
 
-
- ## **4. Helpful Resources**
-1. How to implement nm-connection editor: https://help.ubuntu.com/community/NetworkManager
+ ## **5. Helpful Resources**
+ 1. How to implement nm-connection editor: https://help.ubuntu.com/community/NetworkManager
 
 
 
