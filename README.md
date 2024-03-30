@@ -67,12 +67,33 @@ Can verify the connection above was deleted.
 
 ## **3. Implementation images of nm-connection-editor**
 
+### **3.1 Network bridging**
+---
 
+To implement networking for this project, have used the network bridging format. It has been enabled with two ethernet cables, as follows:
+<ol>
+<b><li> Internet Sharing Cable</li></b>
+<ul>
+<li>	Purpose: Used to provide internet access to all network devices in the HPC. </li>
+
+<li>	How it Functions: The HPC's head node has an internet connection through the Wi-Fi adapter, but the other compute nodes do not. Therefore, to share the internet connection with the other compute nodes, this internet sharing cable was established.</li>
+
+<li>	Assigned Port (NIC) Name: en01</li>
+</ul>
+<b><li> Data Sending Cable</li></b><ul>
+<li>Purpose: Used to share data packets or facilitate intra-communication between the nodes in the HPC.</li>
+
+<li>How it Functions: In the HPC, most of the function inputs and packet installations occur in the head node. However, to enable parallel processing, the installed packets have to be present in both the compute node and the head node. Furthermore, the head node must send inputs or tasks to the compute nodes to perform. Therefore, an intra-communication link is needed. To fulfill this purpose, these data sending cables were established on all nodes’ NICs.</li>
+
+<li>Assigned Port (NIC) Name: enp3s0 </li>
+</ol>
+
+### **3.2 Static IP Address**
+---
 
 
 
  ## **4. Helpful Resources**
- ---
 1. How to implement nm-connection editor: https://help.ubuntu.com/community/NetworkManager
 
 
