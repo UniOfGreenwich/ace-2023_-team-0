@@ -97,8 +97,14 @@ After establishing network connections, it is necessary to assign an IP address 
 ![ipandmacaddressinfo](ip&macaddress.png)<br>
 <br>
 
-### **3.3 Network implmentation in HPC using nm-connection editor**
+### **3.3 Network implementation in HPC using nm-connection editor**
 ---
+![nm-connect-implement](nm-connect-implement.png)<br>
+<b>Figure 4:Implementation of networking in HPC using nm-connection-editor</b>
+<br>
+
+In accordance with the methodology described in section 2.1, a static IP address was assigned to each node, as detailed in Table 2. Figure 4 illustrates the implementation of this setup. As depicted in Figure 5, this implementation was applied to each node to manage the network within the HPC.
+
 
  ## **4. Testing networking implementation**
 
