@@ -38,7 +38,7 @@ By using the above command, can activate the specific network connection.
 After activating network connection, can view the IP configuration of the specific device.
 <br>
 
-## **2.2 How to edit a network connection with nm-connection-editor**
+### **2.2 How to edit a network connection with nm-connection-editor**
 ---
 
 ![edit_nm_connections](edit-connection.png)<br>
