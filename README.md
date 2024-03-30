@@ -41,7 +41,7 @@
 <b>Figure 1: Implementing Power On and Off button on Head node motherboard</b>
 <br>
 
-As shown in picture, first must find out the power button headers. As in A, have found the front panel connectors have the connection to power button and the power button’s LED. Then, as in B connecting the power button with appropriate headers, the LED of power button turns on. Then shutdown the system and turned on using the power button, the system successfully turns on. Moreover, by pressing the power button after head node on, the head node shows power off option in monitor. Through this successfully, implemented the power on and off in compute nodes. 
+As shown in picture, first must find out the power button headers. As in A, have found the front panel connectors have the connection to power button and the power button’s LED. Then, as in B connecting the power button with appropriate headers, the LED of power button turns on. Then shutdown the system and turned on using the power button, the system successfully turns on. Moreover, by pressing the power button after head node on, the head node shows power off option in monitor. Through this successfully, implemented the power on and off button in head nodes. 
 
 
 ### **3.2 Setting up Wake-On-LAN magic packets communication**
@@ -68,6 +68,35 @@ A. First, in the compute node BIOS, in the APM section related with power manage
 By following, the above steps successfully setup a Wake-On-LAN communication. 
 
 
+### **3.3 Bash scripting for Wake-On-LAN**
+---
+<br>
+
+
+    #! /usr/bin/env bash
+
+    #define MAC address in array for etherwake function
+    declare -a WakeUpMacs = (“08:62:66:49:4a:b7” “08:62:66:4e:1f:a3” “08:62:66:4e:1f:67” “08:62:66:4d:3a:e9”)
+
+    #define ssh with IP address in array for power off function
+    declare -a shutDownHosts = (“slave1@192.168.0.12” “slave2@192.168.0.13” “slave3@192.168.0.14” “slave4@192.168.0.14”)
+
+    if  [“$1” = “-on”]; then
+	    #wake-up commands
+	    for mac in “${WakeUpMacs[@]}” ; do
+		    sudo etherwake -i enp3s0 “$mac”
+	    done
+    elif [“$1” = “-off”]; then
+	    #shutdown commands
+	    for host in “${shutDownHosts[@]}”; do
+		    ssh “$host” ‘sudo shutdown now’
+	    done 
+    else
+	    echo “Usage: $0 -on | -off” 
+    fi
+
+<b>Figure 3: Bash script for Power on and off compute nodes</b>
+<br>
 
 
 
