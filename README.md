@@ -79,7 +79,7 @@ By following, the above steps successfully setup a Wake-On-LAN communication.
     declare -a WakeUpMacs = (“08:62:66:49:4a:b7” “08:62:66:4e:1f:a3” “08:62:66:4e:1f:67” “08:62:66:4d:3a:e9”)
 
     #define ssh with IP address in array for power off function
-    declare -a shutDownHosts = (“slave1@192.168.0.12” “slave2@192.168.0.13” “slave3@192.168.0.14” “slave4@192.168.0.14”)
+    declare -a shutDownHosts = (“slave1@192.168.0.11” “slave2@192.168.0.12” “slave3@192.168.0.13” “slave4@192.168.0.14”)
 
     if  [“$1” = “-on”]; then
 	    #wake-up commands
@@ -95,9 +95,10 @@ By following, the above steps successfully setup a Wake-On-LAN communication.
 	    echo “Usage: $0 -on | -off” 
     fi
 
-<b>Figure 3: Bash script for Power on and off compute nodes</b>
+<b>Figure 3: Bash script to power on and off compute nodes</b>
 <br>
 
+As shown in Figure 3 above, a bash script was created to turn off and on the compute nodes. As illustrated in the bash script, the MAC addresses of the compute nodes and the SSH with IP addresses were stored in an array. Next, to turn on the compute nodes, the etherwake function was used within a for loop, and to turn off the compute nodes, sudo shutdown with appropriate SSH was used within a for loop. Finally, to detect any inappropriate input, an echo message was created to instruct on the correct input format.
 
 
  ## **4. Helpful Resources**
