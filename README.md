@@ -1,5 +1,9 @@
-### **3.2 Setting up Wake-On-LAN magic packets communication**
----
+# **2.1 Power on and off function for HPC**
+
+## **2. Implementation of power on and off function**
+
+### **2.1 Setting up Wake-On-LAN magic packets communication**
+
 <br>
 
 ![Wake On LAN setup](WOL-setup1.png)<br>
@@ -21,6 +25,34 @@ A. First, in the compute node BIOS, in the APM section related with power manage
 10. Simultaneously, check whether the compute node receiving those packets by using wireshark GUI.
 By following, the above steps successfully setup a Wake-On-LAN communication. 
 
+### **2.2 Bash scripting for Wake-On-LAN**
+
+    #! /usr/bin/env bash
+
+    #define MAC address in array for etherwake function
+    declare -a WakeUpMacs = (“08:62:66:49:4a:b7” “08:62:66:4e:1f:a3” “08:62:66:4e:1f:67” “08:62:66:4d:3a:e9”)
+
+    #define ssh with IP address in array for power off function
+    declare -a shutDownHosts = (“slave1@192.168.0.11” “slave2@192.168.0.12” “slave3@192.168.0.13” “slave4@192.168.0.14”)
+
+    if  [“$1” = “-on”]; then
+        #wake-up commands
+        for mac in “${WakeUpMacs[@]}” ; do
+            sudo etherwake -i enp3s0 “$mac”
+        done
+    elif [“$1” = “-off”]; then
+        #shutdown commands
+        for host in “${shutDownHosts[@]}”; do
+            ssh “$host” ‘sudo shutdown now’
+        done 
+    else
+        echo “Usage: $0 -on | -off” 
+    fi
+
+<b>Figure 3: Bash script to power on and off compute nodes</b>
+<br>
+
+As shown in Figure 3 above, a bash script was created to turn off and on the compute nodes. As illustrated in the bash script, the MAC addresses of the compute nodes and the SSH with IP addresses were stored in an array. Next, to turn on the compute nodes, the etherwake function was used within a for loop, and to turn off the compute nodes, sudo shutdown with appropriate SSH was used within a for loop. Finally, to detect any inappropriate input, an echo message was created to instruct on the correct input format.
 
 
 
