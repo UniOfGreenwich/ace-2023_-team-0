@@ -4,4 +4,4 @@ OpenSSH, or Open Secure Shell, is an open-source implementation of the SSH proto
 
 In this project, Secure Shell (SSH) is employed to establish secure connections between all nodes. The OpenSSH server facilitates access from one node to another, enabling seamless communication and interaction between systems. OpenSSH is an essential component in configuring servers such as NFS and SLURM, ensuring secure and encrypted communication channels for data transfer and remote management tasks.
 
-[Step by step guide available here!](openssh.md)
+[Step by step configuration guide available here!](openssh.md)
