@@ -54,24 +54,6 @@ class BNB:
         self.BNB_data = self.BNB_data.sort_index()
         print(self.BNB_data.head())
 
-        #plotting prices
-        #plt.figure(figsize=(10, 6))  # Set the figure size for better readability
-        #plt.plot(BNB_data.index, BNB_data['Price'], label='High Price', color='blue')  # Plot the 'Price' column
-        #plt.title('BTC High Price Over Time')  # Set the title of the plot
-        #plt.xlabel('Date')  # Set the x-axis label
-        #plt.ylabel('High Price in GBP')  # Set the y-axis label
-        #plt.legend()  # Show legend
-        #plt.grid(True)  # Show grid
-        #plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
-        #plt.tight_layout()  # Adjust the layout to make room for the rotated x-axis labels
-        #plt.show()  # Display the plot
-
-
-       
-
-
- 
-
 
         self.BNB_data= self.technical_indicators(self.BNB_data)
         self.BNB_data = self.BNB_data.dropna()
@@ -89,7 +71,7 @@ class BNB:
         EMA = self.BNB_data[['ema']].values
         SMA= self.BNB_data[['SMA30']].values
         RSI=self.BNB_data[['RSI']].values
-        MACD=self.BNB_data[['MACD']].values
+        
 
         # Scale each feature independently
         scaler_price = MinMaxScaler()
@@ -97,28 +79,28 @@ class BNB:
         scaler_EMA = MinMaxScaler()
         scaler_SMA= MinMaxScaler()
         scaler_RSI= MinMaxScaler()
-        scaler_MACD= MinMaxScaler()
+      
 
         prices_scaled = scaler_price.fit_transform(prices)
         volumes_scaled = scaler_volume.fit_transform(volumes)
         EMA_scaled = scaler_EMA.fit_transform(EMA)
         SMA_scaled = scaler_SMA.fit_transform(SMA)
         RSI_scaled= scaler_RSI.fit_transform(RSI)
-        MACD_scaled=scaler_MACD.fit_transform(MACD)
+        
 
 
         # Concatenate the scaled features
-        scaled_features = np.concatenate([prices_scaled, volumes_scaled, EMA_scaled,SMA_scaled,RSI_scaled,MACD_scaled], axis=1)
-        time_step = 60
-        num_features = 6
-        split_ratio = {'train': 0.6, 'validation': 0.2, 'test': 0.2}
+        scaled_features = np.concatenate([prices_scaled, volumes_scaled, EMA_scaled,SMA_scaled,RSI_scaled], axis=1)
+        time_step = 30
+        num_features = 5
+        split_ratio = {'train': 0.7, 'validation': 0.1, 'test': 0.2}
         
 
         
         trimmed_size = len(scaled_features) - (len(scaled_features) % time_step)
         trimmed_data = scaled_features[:trimmed_size]
 
-         # Define the data size and calculate split indices for an 80%-20% split
+         # Define the data size and calculate split indices for an 70%-10%-20% split
 
         train_size = int(trimmed_size * split_ratio['train'])
         validation_size = int(trimmed_size * split_ratio['validation'])
@@ -174,7 +156,7 @@ class BNB:
         X_validation, Y_validation = self.create_dataset(validation_data, time_step)
 
         X_validation = np.reshape(X_validation, (X_validation.shape[0],  time_step, num_features))
-        Y_validation = test_data[time_step:, 0]
+        Y_validation = validation_data[time_step:, 0]
 
         X_test, Y_test =self.create_dataset(test_data, time_step)
 
@@ -184,13 +166,12 @@ class BNB:
 
         dim_exit=1
         na=50 
-        batch_size=64
+        batch_size=32
         epochs=50
 
         #LSTM
         LSTM_model = Sequential()
         LSTM_model.add(LSTM(units=na, input_shape=(time_step, num_features)))
-        LSTM_model.add(Dropout(0.2))  # Dropout 20% of the nodes of the previous layer during training
         LSTM_model.add(Dense(1))
         LSTM_model.add(Dense(units=dim_exit))
         LSTM_model.compile(optimizer='adam',loss='mse')
@@ -205,13 +186,12 @@ class BNB:
 
 
         progress_bar['value'] = 0
-        progress_label.config(text="Initializing...")
+        progress_label.config(text="Initializing GRU...")
 
 
         #GRU
         GRU_model= Sequential()
         GRU_model.add(GRU(units=na, input_shape=(time_step, num_features)),)
-        GRU_model.add(Dropout(0.2))
         GRU_model.add(Dense(1))
         GRU_model.add(Dense(units=dim_exit))
         GRU_model.compile(optimizer='adam',loss='mse')
@@ -312,6 +292,7 @@ class BNB:
         plt.legend()
         plt.xticks(rotation=45)
         plt.tight_layout()
+        plt.get_current_fig_manager().window.state('zoomed')
         plt.show()
 
          # Number of days to look back to make future predictions
@@ -382,19 +363,13 @@ class BNB:
         plt.legend()
         # Rotate the date labels for better readability
         plt.xticks(rotation=45)
+        plt.get_current_fig_manager().window.state('zoomed')
         # Display the plot
         plt.show()
 
 
      def technical_indicators(self,dataset):
-        
-    
-            # Create MACD
-            dataset['26ema'] = dataset['Price'].ewm(span=26).mean()
-            dataset['12ema'] = dataset['Price'].ewm(span=12).mean()
-            dataset['MACD'] = dataset['12ema']-dataset['26ema']
-
-            
+ 
     
             # Create Exponential moving average
             dataset['ema'] = dataset['Price'].ewm(com=0.5).mean()
