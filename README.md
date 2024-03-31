@@ -8,15 +8,20 @@ Due to failures experienced with the power-on button for the entire HPC system, 
 ## **2. Implementation of power on and off function**
 
 ### **2.1 Understanding of Wake-On-LAN**
-![Wake On LAN info](WakeOnLAN.png)<br>
-<b>Figure 1: Wake On LAN working setup</b>
+![Wake On LAN info](WakeOnLAN.png)
+<center><b>Figure 1: Wake On LAN working setup</b></center>
 <br>
+
+A network protocol known as Wake-On-LAN (WoL) enables a computer to be remotely powered on or awakened from a low-power state over a network connection. This technology allows for remote maintenance, updates and power control, making it very helpful for maintaining computer networks in places like offices and data centers. In this project, using Wake-On-LAN, a magic packet containing the etherwake command (instructing the compute nodes to turn on) along with the appropriate compute nodes' MAC addresses (connecting with the data bridge) will be sent. This enables the compute nodes to power on from the low-power state. A demonstration of it is shown in Figure 1.
+
+As shown in Figure 1A, the magic packet will contain all the MAC addresses of the compute nodes in the network. Note that all devices must be on the same network, which is 192.168.0.0, and have a valid NIC (Network Interface Card). Then, the magic packets will be broadcast in the network as shown in Figure 1B, which is 255.255.255.255. The magic packets will be sent to the relevant compute nodes by identifying each MAC address incorporated within the magic packets.
+
 
 ### **2.2 Setting up Wake-On-LAN magic packets communication**
 <br>
 
-![Wake On LAN setup](WOL-setup1.png)<br>
-<b>Figure 2: Implementing Wake-On-LAN between a head node and a compute node</b>
+![Wake On LAN setup](WOL-setup1.png)
+<center><b>Figure 2: Implementing Wake-On-LAN between a head node and a compute node</b></center>
 <br>
 
 Following the letters and numbers on the above picture, below going to discuss the purpose of each line.
@@ -59,7 +64,7 @@ After, setting up the WOL communication and Open-SSH, have to create a bash scri
         echo “Usage: $0 -on | -off” 
     fi
 
-<b>Figure 3: Bash script to power on and off compute nodes</b>
+<center><b>Figure 3: Bash script to power on and off compute nodes</b></center>
 <br>
 
 As shown in Figure 3 above, a bash script was created to turn off and on the compute nodes. As illustrated in the bash script, the MAC addresses of the compute nodes and the SSH with IP addresses were stored in an array. Next, to turn on the compute nodes, the etherwake function was used within a for loop, and to turn off the compute nodes, sudo shutdown with appropriate SSH was used within a for loop. Finally, to detect any inappropriate input, an echo message was created to instruct on the correct input format.
@@ -71,9 +76,9 @@ After the successful implementation of Wake On LAN, 3 tests have been conducted:
 ### **3.1. Wireshark testing**
 ---
 
-![Wire shark testing](wiresharktest.png)<br>
-<b>Figure 4: Wireshark testing</b>
-<br>
+![Wire shark testing](wiresharktest.png)
+<center><b>Figure 4: Wireshark testing</b>
+</center><br>
 <ul>
 <li>Purpose: To verify that WoL magic packets are correctly formatted and successfully transmitted over the network to wake up targeted devices from a low-power state.</li>
 
