@@ -1,9 +1,18 @@
 # **Power on and off function for HPC**
 
+## **1. Background for power on and off function in HPC**
+
+Due to failures experienced with the power-on button for the entire HPC system, the strategy was changed to power the HPC on and off. In this project, a bash script was created using Wake-on-LAN communication and OpenSSH. Initially, the HPC's head node will be turned on using the power-on button. Afterwards, to turn on the compute nodes, a bash script is run, which turns on the other compute nodes at intervals. Through this method, the compute nodes can be successfully powered on, allowing the whole HPC system to function. Then, to turn off all the compute nodes, the OpenSSH function was incorporated into the script, with the sudo shutdown command for all compute nodes. Through this, it is possible to turn off the entire compute node network. Finally, to turn off the head node, one can press the power button or enter a separate sudo shutdown command for the head node.
+
+
 ## **2. Implementation of power on and off function**
 
-### **2.1 Setting up Wake-On-LAN magic packets communication**
+### **2.1 Understanding of Wake-On-LAN**
+![Wake On LAN info](WakeOnLAN.png)<br>
+<b>Figure 1: Wake On LAN working setup</b>
+<br>
 
+### **2.2 Setting up Wake-On-LAN magic packets communication**
 <br>
 
 ![Wake On LAN setup](WOL-setup1.png)<br>
@@ -25,7 +34,7 @@ A. First, in the compute node BIOS, in the APM section related with power manage
 10. Simultaneously, check whether the compute node receiving those packets by using wireshark GUI.
 By following, the above steps successfully setup a Wake-On-LAN communication. 
 
-### **2.2 Bash scripting for Wake-On-LAN**
+### **2.3 Bash scripting for Wake-On-LAN**
 After, setting up the WOL communication and Open-SSH, have to create a bash script to turn on and off the compute nodes, after booting up of head node. This step took due to the failure of power on and off button process. 
 
     #! /usr/bin/env bash
