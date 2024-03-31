@@ -16,7 +16,7 @@
     - Configure BIOS setting ( In power management setting)
 
 2. How to connect compute nodes and head node to enable the power buttons? (Hardware Design)
-    - Needed components : Switch with maximum 11 ports (1 for header node and 10 for compute node) and ethernet cable (11 is enough)
+    - Needed components : Switch with maximum 5 ports (2 for head node and 8 for compute nodes) and ethernet cable (10 is enough)
     - Have to crimple ethernet cables following CAT 5E standards
     - Building appopriate node connections and power in motherboard
     - Network Configuration (Done through hard coded or DHCP)
@@ -101,7 +101,42 @@ By following, the above steps successfully setup a Wake-On-LAN communication.
 As shown in Figure 3 above, a bash script was created to turn off and on the compute nodes. As illustrated in the bash script, the MAC addresses of the compute nodes and the SSH with IP addresses were stored in an array. Next, to turn on the compute nodes, the etherwake function was used within a for loop, and to turn off the compute nodes, sudo shutdown with appropriate SSH was used within a for loop. Finally, to detect any inappropriate input, an echo message was created to instruct on the correct input format.
 
 
- ## **4. Helpful Resources**
+## **4. Testing power on and off function**
+
+After the successful implementation of Wake On LAN, 3 tests have been conducted:
+
+### **4.1. Wireshark testing**
+---
+<ul>
+<li>Purpose: To verify that WoL magic packets are correctly formatted and successfully transmitted over the network to wake up targeted devices from a low-power state.</li>
+
+<li>Method: Network traffic is captured and analysed using Wireshark during the attempt to wake a device using WoL. This involves sending a magic packet containing the target device's MAC address over the network and monitoring for its transmission and receipt. (shown in Figure 3)</li>
+
+<li>Results: As shown in Figure 3, the testing confirms the magic packet reaches the intended device and is properly constructed, indicating the built network configurations support WoL functionality. </li>
+</ul>
+
+### **4.2. Bash script power on testing**
+---
+<ul>
+<li>Purpose: To verify whether the created bash script turns on the compute nodes from the head node.</li>
+
+<li>Method: After the head node successfully boots up, the script name and the appropriate “-on” command have to be entered.</li>
+
+<li>Results: As a result, the head node will not print anything in the terminal. The compute nodes start to turn on one by one as mentioned in the script's for loop.</li>
+</ul>
+
+### **4.3. Bash Script Power Off testing**
+---
+<ul>
+<li>Purpose: To verify whether the created bash script turns off the compute nodes.</li>
+
+<li>Method: After successful power-on testing of the compute nodes, a power-off test is conducted. For that, similarly, enter the script’s name followed by the “-off” command.</li>
+
+<li>Results: As a result, the head node will not print anything in the terminal. The compute nodes begin to turn off one by one as mentioned in the script's for loop.</li>
+</ul>
+
+
+ ## **5. Helpful Resources**
  
 1. The button can be find here: https://uk.rs-online.com/web/p/push-button-switches/2099127?cm_mmc=UK-PLA-DS3A-_-google-_-CSS_UK_EN_PMAX_RS+PRO-_--_-2099127&matchtype=&&gad_source=1&gclid=EAIaIQobChMIpP3xg7-mhAMVFAUGAB0t5QD5EAQYByABEgIy1_D_BwE&gclsrc=aw.ds
 
