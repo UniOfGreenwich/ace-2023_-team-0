@@ -1,4 +1,4 @@
-# **2.1 Power on and off function for HPC**
+# **Power on and off function for HPC**
 
 ## **2. Implementation of power on and off function**
 
@@ -26,6 +26,7 @@ A. First, in the compute node BIOS, in the APM section related with power manage
 By following, the above steps successfully setup a Wake-On-LAN communication. 
 
 ### **2.2 Bash scripting for Wake-On-LAN**
+After, setting up the WOL communication and Open-SSH, have to create a bash script to turn on and off the compute nodes, after booting up of head node. This step took due to the failure of power on and off button process. 
 
     #! /usr/bin/env bash
 
@@ -54,9 +55,47 @@ By following, the above steps successfully setup a Wake-On-LAN communication.
 
 As shown in Figure 3 above, a bash script was created to turn off and on the compute nodes. As illustrated in the bash script, the MAC addresses of the compute nodes and the SSH with IP addresses were stored in an array. Next, to turn on the compute nodes, the etherwake function was used within a for loop, and to turn off the compute nodes, sudo shutdown with appropriate SSH was used within a for loop. Finally, to detect any inappropriate input, an echo message was created to instruct on the correct input format.
 
+## **3. Testing power on and off function**
+
+After the successful implementation of Wake On LAN, 3 tests have been conducted:
+
+### **3.1. Wireshark testing**
+---
+
+![Wire shark testing](wiresharktest.png)<br>
+<b>Figure 4: Wireshark testing</b>
+<br>
+<ul>
+<li>Purpose: To verify that WoL magic packets are correctly formatted and successfully transmitted over the network to wake up targeted devices from a low-power state.</li>
+
+<li>Method: Network traffic is captured and analysed using Wireshark during the attempt to wake a device using WoL. This involves sending a magic packet containing the target device's MAC address over the network and monitoring for its transmission and receipt. (shown in Figure 4)</li>
+
+<li>Results: As shown in Figure 4, the testing confirms the magic packet reaches the intended device and is properly constructed, indicating the built network configurations support WoL functionality. Similary, the above test has conducted across all compute nodes with head node. </li>
+</ul>
+
+### **3.2. Bash script power on testing**
+---
+<ul>
+<li>Purpose: To verify whether the created bash script turns on the compute nodes from the head node.</li>
+
+<li>Method: After the head node successfully boots up, the script name and the appropriate “-on” command have to be entered.</li>
+
+<li>Results: As a result, the head node will not print anything in the terminal. The compute nodes start to turn on one by one as mentioned in the script's for loop.</li>
+</ul>
+
+### **3.3. Bash script power off testing**
+---
+<ul>
+<li>Purpose: To verify whether the created bash script turns off the compute nodes.</li>
+
+<li>Method: After successful power-on testing of the compute nodes, a power-off test is conducted. For that, similarly, enter the script’s name followed by the “-off” command.</li>
+
+<li>Results: As a result, the head node will not print anything in the terminal. The compute nodes begin to turn off one by one as mentioned in the script's for loop.</li>
+</ul>
 
 
- ## **5. Helpful Resources**
+
+ ## **4. Helpful Resources**
 
 1. How to install WOL : https://pimylifeup.com/ubuntu-enable-wake-on-lan/#:~:text=Wake%2Don%2DLAN%20is%20a,functionality%20through%20your%20devices%20BIOS.
 <br><br>
