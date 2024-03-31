@@ -16,13 +16,21 @@ A network protocol known as Wake-On-LAN (WoL) enables a computer to be remotely 
 
 As shown in Figure 1A, the magic packet will contain all the MAC addresses of the compute nodes in the network. Note, that all devices must be on the same network, which is 192.168.0.0, and have a valid NIC (Network Interface Card). Then, the magic packets will be broadcast in the network as shown in Figure 1B, which is 255.255.255.255. The magic packets will be sent to the relevant compute nodes by identifying each MAC address incorporated within the magic packets.
 
+### **2.2 Setting up Power button on head node**
+ ---
+
+![Power button setup](powerbuttonsetup.png)<br>
+<b>Figure 2: Implementing Power On and Off button on Head node motherboard</b>
+<br>
+
+As shown in Figure 2, must first identify the power button headers. As illustrated in part A, it was found that the front panel connectors are the connections to the power button and the power button's LED. Then, as shown in Figure 2 B, upon connecting the power button to the appropriate headers, the LED of the power button illuminates. After shutting down the system and turning it on using the power button, the head node successfully powers on. Furthermore, by pressing the power button after the head node is on, the head node displays a power-off option on the monitor. Through this process, the power on and off functionality was successfully implemented in the head node.
 
 
-### **2.2 Setting up Wake-On-LAN magic packets communication**
+### **2.3 Setting up Wake-On-LAN magic packets communication**
 <br>
 
 ![Wake On LAN setup](WOL-setup1.png)<br>
-<b>Figure 2: Implementing Wake-On-LAN between a head node and a compute node</b>
+<b>Figure 3: Implementing Wake-On-LAN between a head node and a compute node</b>
 <br>
 
 Following the letters and numbers on the above picture, below going to discuss the purpose of each line.
@@ -40,7 +48,7 @@ A. First, in the compute node BIOS, in the APM section related with power manage
 10. Simultaneously, check whether the compute node receiving those packets by using wireshark GUI.
 By following, the above steps successfully, can setup a Wake-On-LAN communication. 
 
-### **2.3 Bash scripting for Wake-On-LAN**
+### **2.4 Bash scripting for Wake-On-LAN**
 After, setting up the WOL communication and Open-SSH, have to create a bash script to turn on and off the compute nodes, which performs after booting up of head node. This step took due to the failure of power on and off button process. 
 
     #! /usr/bin/env bash
@@ -65,10 +73,10 @@ After, setting up the WOL communication and Open-SSH, have to create a bash scri
         echo “Usage: $0 -on | -off” 
     fi
 
-<b>Figure 3: Bash script to power on and off compute nodes</b>
+<b>Figure 4: Bash script to power on and off compute nodes</b>
 <br>
 
-As shown in Figure 3 above, a bash script was created to turn off and on the compute nodes. As illustrated in the bash script, the MAC addresses of the compute nodes and the SSH with IP addresses were stored in an array. Next, to turn on the compute nodes, the etherwake function was used within a for loop, and to turn off the compute nodes, sudo shutdown with appropriate SSH was used within a for loop. Finally, to detect any inappropriate input, an echo message was created to instruct on the correct input format.
+As shown in Figure 4 above, a bash script was created to turn off and on the compute nodes. As illustrated in the bash script, the MAC addresses of the compute nodes and the SSH with IP addresses were stored in an array. Next, to turn on the compute nodes, the etherwake function was used within a for loop, and to turn off the compute nodes, sudo shutdown with appropriate SSH was used within a for loop. Finally, to detect any inappropriate input, an echo message was created to instruct on the correct input format.
 
 ## **3. Testing power on and off function**
 
@@ -78,7 +86,7 @@ After the successful implementation of Wake On LAN, 3 tests have been conducted:
 ---
 
 ![Wire shark testing](wiresharktest.png)<br>
-<b>Figure 4: Wireshark testing</b>
+<b>Figure 5: Wireshark testing</b>
 <br>
 <ul>
 <li>Purpose: To verify that WoL magic packets are correctly formatted and successfully transmitted over the network to wake up targeted devices from a low-power state.</li>
@@ -113,4 +121,16 @@ After the successful implementation of Wake On LAN, 3 tests have been conducted:
  ## **4. Helpful Resources**
 
 1. How to install WOL : https://pimylifeup.com/ubuntu-enable-wake-on-lan/#:~:text=Wake%2Don%2DLAN%20is%20a,functionality%20through%20your%20devices%20BIOS.
-<br><br>
+<br>
+
+2. The button can be find here: https://uk.rs-online.com/web/p/push-button-switches/2099127?cm_mmc=UK-PLA-DS3A-_-google-_-CSS_UK_EN_PMAX_RS+PRO-_--_-2099127&matchtype=&&gad_source=1 gclid=EAIaIQobChMIpP3xg7-mhAMVFAUGAB0t5QD5EAQYByABEgIy1_D_BwE&gclsrc=aw.ds
+<br>
+
+3. Power button and Front panel connections : https://www.pcinq.com/how-to-connect-motherboard-front-panel-headers/ https://www.electronicshub.org/power-button-on-motherboard/#:~:text=Ans%3A%20The%20power%20switch%20on,for%20the%2020-pin%20header
+<br>
+
+
+ ## **5. Images**
+![push button image](PushButton.png)<br>
+<b>Figure 6: Push button used in head node</b>
+<br>
