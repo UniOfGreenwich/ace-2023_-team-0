@@ -103,7 +103,16 @@ After establishing network connections, it is necessary to assign an IP address 
 <b>Figure 4:Implementation of networking in HPC using nm-connection-editor</b>
 <br>
 
-In accordance with the methodology described in section 2.1, a static IP address was assigned to each node, as detailed in Table 2. Figure 4 illustrates the implementation of this setup. As depicted in Figure 5, this implementation was applied to each node to manage the network within the HPC.
+In accordance with the methodology described in section 2.1, a static IP address was assigned to each node, as detailed in Table 2. Figure 4 illustrates the implementation of this setup. As depicted in Figure 4, this implementation was applied to each node to manage the network within the HPC.
+
+### **3.4 Implemented network topology**
+---
+
+![topology-implement](startopology.png)<br>
+<b>Figure 5: Network topology implemented in HPC</b>
+<br>
+
+For this HPC’s network, star network topology has been implemented, as shown in Figure 5. In a star topology, each node is independently connected to a central hub or switch. If one node fails, it does not affect the rest of the network, as each has a direct line to the switch, which facilitates error detection and isolation. This topology is common in Ethernet LANs because of its simplicity and the ease with which systems can be added or removed. In the above can observe two topologies, due to internet sharing and data sharing ethernet connection.
 
 
 ## **4. Testing networking implementation**
@@ -111,34 +120,35 @@ In accordance with the methodology described in section 2.1, a static IP address
 ---
 
 ![internet_test](internettest.png)<br>
-<b>Figure 5: Internet connection test on compute node</b>
+<b>Figure 6: Internet connection test on compute node</b>
 <br>
 
 <ul>
 <li>Purpose: To confirm that an internet connection is shared among all nodes.</li>
 
-<li>Method: This is achieved by pinging Google's DNS (Domain Name System) server, as depicted in Figure 5.</li>
+<li>Method: This is achieved by pinging Google's DNS (Domain Name System) server, as depicted in Figure 6.</li>
 
-<li>Result: As shown in Figure 5, executing the command ping 8.8.8.8 on one of the compute nodes—which targets Google’s DNS Server—successfully verifies that the internet connection is active on that node. This procedure was replicated across all nodes, with each reporting successful outcomes. Therefore, it can be concluded that downloading necessary packages on the compute nodes is feasible, indicating a functioning internet connection across the network.</li>
+<li>Result: As shown in Figure 6, executing the command ping 8.8.8.8 on one of the compute nodes—which targets Google’s DNS Server—successfully verifies that the internet connection is active on that node. This procedure was replicated across all nodes, with each reporting successful outcomes. Therefore, it can be concluded that downloading necessary packages on the compute nodes is feasible, indicating a functioning internet connection across the network.</li>
 </ul>
 
 ### **4.2. Ping Tests**
 ---
 
 ![ping_test](pingtest.png)<br>
-<b>Figure 6: Ping test on compute node</b>
+<b>Figure 7: Ping test on compute node</b>
 <br>
 
 <ul>
 <li>Purpose: To verify basic connectivity between nodes and measure the round-trip time (RTT) for packets.</li>
 
-<li>Method: The method involves using the ping command to send ICMP (Internet Control Message Protocol) echo requests to each node, as illustrated in Figure 6.</li>
+<li>Method: The method involves using the ping command to send ICMP (Internet Control Message Protocol) echo requests to each node, as illustrated in Figure 7.</li>
 
-<li>Result: As depicted in Figure 6, on one of the compute nodes, executing the command ping 192.168.0.10 targets the head node's IP address and successfully completes the ping test. This test was similarly conducted across all nodes, yielding successful outcomes. This demonstrates that connectivity between nodes is established, allowing for effective communication and coordination within the network.</li>
+<li>Result: As depicted in Figure 7, on one of the compute nodes, executing the command ping 192.168.0.10 targets the head node's IP address and successfully completes the ping test. This test was similarly conducted across all nodes, yielding successful outcomes. This demonstrates that connectivity between nodes is established, allowing for effective communication and coordination within the network.</li>
 </ul>
 
  ## **5. Helpful Resources**
  1. How to implement nm-connection editor: https://help.ubuntu.com/community/NetworkManager
 
+2. Star topology information: https://www.techtarget.com/searchnetworking/definition/star-network
 
-
+3. Network bridge implementation information: https://www.howtogeek.com/892923/what-is-a-network-bridge-and-should-you-use-one/
