@@ -57,3 +57,25 @@
 ![Wake On LAN setup](WakeonLan.png)<br>
 <b>Figure 2:Wake On LAN</b>
 <br>
+
+# The HPC’S purpose 
+There are three sub-components to the HPC’S purpose in order for it to function fully. 
+
+•	Background information on each selected crypto 
+•	Recent fluctuations in the price and trading patterns 
+•	Predicted outcomes and investment recommendation 
+•	Choose operating system for Hpc 
+
+## Background information on each selected crypto 
+Cryptocurrency is a digital asset that is secured by cryptography. This type of money allows for decentralized transactions, meaning that a central authority, such as a bank, does not handle, verify, or regulate the transactions. An example of the information that the HPC could collect are, when the currency was made, how much its currently worth and the advantage and disadvantages to it like where it is and isn’t accepted
+
+## Recent fluctuations in the price and trading patterns 
+It is not unusual for the price of Bitcoin (BTC 0.72%) to fluctuate by 5% or even 10% every day. Wider price fluctuations can occur with smaller coins. because supply and demand, investors and users’ mood, laws, and media hype all have an impact. All these elements work together to cause price volatility. This will show use if the coin is on the right trajectory or if we should cut our losses 
+
+## Predicted outcomes and investment recommendation 
+In order for the HPC to figure out how to give suggestion that track with the current stats of the coin we will have to utilize machine learning. A field of computer science and artificial intelligence (AI) called "machine learning" focuses on using data and algorithms to simulate human learning processes and progressively increase their accuracy. By using machine learning we can utilize the information we gathered in the first two step to create an algorithm that can not only get you when to invest but how to invest with the hope that this will limit the risk in error my taking out the human error possibility 
+
+## Combined step
+Once all the above steps are combined, we should have a HPC that will be able to select and recommend cryptocurrency as well as improve itself the more and more the machine is used 
+
+
