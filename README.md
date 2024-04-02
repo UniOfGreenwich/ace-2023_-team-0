@@ -254,7 +254,8 @@ To launch the application, navigate to the directory containing the script and e
 #### Exiting the Application
 To exit the application at any time, click the "Exit" button on any screen. This will close the application safely.
 
-note: This application displays plots to visualize cryptocurrency predictions but, our High-Performance Computing  system does not integrate any GPU due to unknown errors encountered while testing the system with it. Owing to time constraints, we were unable to resolve the issue with the GPU.
+Note: This application displays plots to visualize cryptocurrency predictions but, our High-Performance Computing  system does not integrate any GPU due to unknown errors encountered while testing the system with it. Owing to time constraints, we were unable to resolve the issue with the GPU.
+
 [Access the detailed information here](https://github.com/nbranch/feature/Machine_Learning_Application_Ubuntu_Version---Taufique)
 
 
