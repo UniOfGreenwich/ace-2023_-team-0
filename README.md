@@ -255,8 +255,7 @@ To launch the application, navigate to the directory containing the script and e
 To exit the application at any time, click the "Exit" button on any screen. This will close the application safely.
 
 note: This application displays plots to visualize cryptocurrency predictions but, our High-Performance Computing  system does not integrate any GPU due to unknown errors encountered while testing the system with it. Owing to time constraints, we were unable to resolve the issue with the GPU.
-To get more details click on:
- [feature/Machine_Learning_Application_Ubuntu_Version](https://github.com/nbranch/feature/Machine_Learning_Application_Ubuntu_Version---Taufique)
+[Access the detailed information here](https://github.com/nbranch/feature/Machine_Learning_Application_Ubuntu_Version---Taufique)
 
 
 ### 6.1. How to Create Machine Learning for Predict Crypto Currencies
@@ -274,7 +273,7 @@ To get more details click on:
 ## 9. Task Implementation:
 ### 9.1. How to Create Machine Learning for Predict Crypto Currencies
 
-To predict cryptocurrency prices with machine learning, start by fetching historical data (prices, volumes, timestamps) using APIs like Alpha Vantage. Process this data, compute technical indicators (RSI, EMA, SMA), and normalize to ensure uniformity. Split the data into training, validation, and testing sets for model development and evaluation. Consider machine learning models such as Random Forest for its robustness, Gradient Boosting for error minimization, LSTM for capturing long-term dependencies, and GRU for efficient sequential data handling. Fine-tune models using the validation set and assess their performance with metrics like RMSE and MAE on the test set, aiming to select the model that best captures cryptocurrency market dynamics.
+To predict cryptocurrency prices with machine learning, start by fetching historical data (prices, volumes, timestamps) using Yahoo Finaces. Process this data, compute technical indicators (RSI, EMA, SMA), and normalize to ensure uniformity. Split the data into training, validation, and testing sets for model development and evaluation. Consider machine learning models such as LSTM for capturing long-term dependencies, and GRU for efficient sequential data handling. Fine-tune models using the validation set and assess their performance with metrics like RMSE and MAE on the test set, aiming to select the model that best captures cryptocurrency market dynamics.
 
 [Access the detailed step-by-step guide here](Predicting_Cryptocurrency_Prices_with_ML.md)
 
