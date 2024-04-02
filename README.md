@@ -172,7 +172,9 @@ To launch the application, navigate to the directory containing the script and e
 #### Exiting the Application
 To exit the application at any time, click the "Exit" button on any screen. This will close the application safely.
 
-Note: All predictions are based on the most recent available data and use advanced machine learning algorithms to forecast future prices. However, the market can be volatile, and predictions should not be used as the sole basis for investment decisions.
+note: This application displays plots to visualize cryptocurrency predictions but, our High-Performance Computing  system does not integrate any GPU due to unknown errors encountered while testing the system with it. Owing to time constraints, we were unable to resolve the issue with the GPU.
+To get more details click on:
+ [feature/Machine_Learning_Application_Ubuntu_Version](https://github.com/nbranch/feature/Machine_Learning_Application_Ubuntu_Version---Taufique)
 
 
 ### 6.1. How to Create Machine Learning for Predict Crypto Currencies
