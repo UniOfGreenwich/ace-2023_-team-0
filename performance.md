@@ -13,7 +13,7 @@ HPC built in this project: 16 cores  (4 X i5 processor 9th generation)
 
 As, mentioned above, the cryptocurrency prediction in general computer, took 8 minutes 49 seconds (which has i5 processor 9th generation). Therefore, to enhance the performance of prediction, in this project number of motherboards were connected together and tested making HPC with modular design (increasing number of motherboards)
 
-| No of motherboards used | 1 x i5 4th gen motherboard | 2 x i5 processor 9th generation | 3 x i5 processor 9th generation | i5 processor 9th generation |
+| No of motherboards used | 1 x i5 4th gen motherboard | 2 x i5 processor 4th generation | 3 x i5 processor 4th generation | i5 processor 4th generation |
 |---------------|----------------|------------------|---------------|-------------------|
 | Time it took | 19 minutes 02 seconds | 14 minutes 03 seconds | 7 minutes 59 seconds | 2 minutes 48 seconds |
 
