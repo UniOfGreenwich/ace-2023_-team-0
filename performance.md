@@ -3,7 +3,7 @@
 As the HPC system was built for this project, a series of tests were conducted to evaluate its performance. The steps and guidelines described above, including networking, power on/off functions, prometheus, Grafana, the justification for choosing operating systems and designs’ tests have demonstrated that the specific tasks or designs function very well. With this knowledge, let's explore how the HPC system efficiently runs the application and performs predictions far better compared to general computers, such as laptops and desktops.
 
 ## 1. Timing for cryptocurrency prediction:
-General Computer: 8 minute 49 seconds
+General Computer: 8 minute 49 seconds <br>
 HPC built in this project: 2 minute 48 seconds
 
 
